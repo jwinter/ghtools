@@ -1,16 +1,13 @@
 # ghtools
 
-TODO: Brief description
+Github tools
 
+run cider-jack-in from core_test.clj
+then run (user/reset)
 
 
 ## Releases and Dependency Information
 
-* Releases are published to TODO_LINK
-
-* Latest stable release is TODO_LINK
-
-* All released versions TODO_LINK
 
 [Leiningen] dependency information:
 

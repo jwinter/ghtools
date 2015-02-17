@@ -4,6 +4,7 @@
   :license {:name "TODO: Choose a license"
             :url "http://choosealicense.com/"}
   :dependencies [[org.clojure/clojure "1.7.0-alpha5"]
+                 [cheshire "5.4.0"]
                  [clj-http "1.0.1"]]
   :main ghtools.runner
   :profiles {:dev {:dependencies [[org.clojure/tools.namespace "0.2.7"]]

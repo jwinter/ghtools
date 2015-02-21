@@ -4,7 +4,10 @@ Github tools
 
 run cider-jack-in from core_test.clj
 then run (user/reset)
-
+or
+```
+ghtools.core-test> (do (user/reset) (run-tests))
+```
 
 ## Releases and Dependency Information
 

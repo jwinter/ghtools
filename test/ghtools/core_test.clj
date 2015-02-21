@@ -1,10 +1,11 @@
 (ns ghtools.core-test
   (:require [clojure.test :refer :all]
-            [ghtools.core :refer :all]))
+            [ghtools.core :refer :all]
+            [cheshire.core :as json]
+            ))
 
 (def test-url "https://api.github.com/repos/jwinter/test-repo/pulls")
-(def sample-json (json/parse-string (:body (client/get test-url))))
-
+(def sample-json (json/parse-string (slurp "./test/fixtures/pulls.json")))
 
 (deftest testing-pulls
   (testing "pulls"
@@ -12,7 +13,9 @@
          (is (= 1 (count sample-pulls)))
          (is (= "https://api.github.com/repos/jwinter/test-repo/pulls/1"
                 ((first sample-pulls) "url")))
-         (is (= "jwinter/test-repo: <a href='https://api.github.com/repos/jwinter/test-repo/pulls/1'>More detail in the README</a><br />"
+         (is (= "jwinter/test-repo: <a href='https://github.com/jwinter/test-repo/pull/1'>More detail in the README</a><br />"
                 (html-format-pulls sample-pulls)))
-         (is true)
-    )))
+         (is (= "jwinter/test-repo: *More detail in the README* - https://github.com/jwinter/test-repo/pull/1\n"
+                (markdown-format-pulls sample-pulls)))
+         (is (= repo-pulls )
+    ))))

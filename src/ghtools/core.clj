@@ -5,25 +5,40 @@
             [clojure.string :as str]
             ))
 
-(defn html-format-pulls [pulls]
-  (str/join (map (fn [pull]
-         (let [repo-name (get-in pull ["head" "repo" "full_name"])
-               pull-url (pull "url")
-               pull-title (pull "title")
-               ]
-           (str repo-name ": <a href='" pull-url "'>" pull-title "</a><br />")))
-   pulls)))
-  
+(defrecord Pull [repo-name url title])
 
-(defn fetch [url]
+(defn pull-init [pull-json-hash]
+  (->Pull (get-in pull-json-hash ["head" "repo" "full_name"])
+          (pull-json-hash "html_url")
+          (pull-json-hash "title")))
+
+(defn repo-pulls []
+  )
+
+(defn html-string [pull]
+  (str (.repo-name pull)  ": <a href='" (.url pull) "'>" (.title pull) "</a><br />"))
+
+(defn markdown-string [pull]
+  (str (.repo-name pull)  ": *" (.title pull) "* - " (.url pull) "\n"))
+
+(defn html-format-pulls [pulls]
+  (str/join
+   (map (fn [pull]
+          (html-string (pull-init pull)))
+        pulls)))
+
+(defn markdown-format-pulls [pulls]
+  (str/join
+   (map (fn [pull]
+          (markdown-string (pull-init pull)))
+        pulls)))
+
+(defn- fetch-json [url]
   (json/parse-string
    (:body (client/get url))))
 
 (defn pulls
   "fetch pulls for this repo"
   [username repo]
-  (fetch (str "https://api.github.com/repos/" username "/" repo "/pulls")))
+  (fetch-json (str "https://api.github.com/repos/" username "/" repo "/pulls")))
 
-
-(def test-url "https://api.github.com/repos/jwinter/test-repo/pulls")
-(def sample-json (json/parse-string (:body (client/get test-url))))

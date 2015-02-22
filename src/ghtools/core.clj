@@ -12,8 +12,14 @@
           (pull-json-hash "html_url")
           (pull-json-hash "title")))
 
-(defn repo-pulls []
-  )
+(defn- fetch-json [url]
+  (json/parse-string
+   (:body (client/get url))))
+
+(defn pulls
+  "fetch pulls for this repo"
+  [username repo]
+  (fetch-json (str "https://api.github.com/repos/" username "/" repo "/pulls")))
 
 (defn html-string [pull]
   (str (.repo-name pull)  ": <a href='" (.url pull) "'>" (.title pull) "</a><br />"))
@@ -33,12 +39,9 @@
           (markdown-string (pull-init pull)))
         pulls)))
 
-(defn- fetch-json [url]
-  (json/parse-string
-   (:body (client/get url))))
+(defn split-names [repos]
+  "Takes a list of repos and returns all the open pulls in markdown-format"
+  (map #(str/split %1 #"\/") repos))
 
-(defn pulls
-  "fetch pulls for this repo"
-  [username repo]
-  (fetch-json (str "https://api.github.com/repos/" username "/" repo "/pulls")))
-
+(defn open-pulls-from-repos [repos]
+  (str/join (map markdown-format-pulls (map #(apply pulls %1) (split-names repos)))))

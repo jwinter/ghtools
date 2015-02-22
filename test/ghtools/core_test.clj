@@ -16,6 +16,12 @@
          (is (= "jwinter/test-repo: <a href='https://github.com/jwinter/test-repo/pull/1'>More detail in the README</a><br />"
                 (html-format-pulls sample-pulls)))
          (is (= "jwinter/test-repo: *More detail in the README* - https://github.com/jwinter/test-repo/pull/1\n"
-                (markdown-format-pulls sample-pulls)))
-         (is (= repo-pulls )
-    ))))
+                (markdown-format-pulls sample-pulls)))))
+  (testing "open-pulls-from-repos"
+    (is (= (open-pulls-from-repos ["jwinter/test-repo" "jwinter/second-test-repo"])
+           (str
+            "jwinter/test-repo: *More detail in the README* - "
+            "https://github.com/jwinter/test-repo/pull/1\n"
+            "jwinter/second-test-repo: *Add a README* - "
+            "https://github.com/jwinter/second-test-repo/pull/1\n"))))
+  )

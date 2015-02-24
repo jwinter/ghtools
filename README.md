@@ -4,7 +4,8 @@ Github tools
 
 Configure by adding a src/ghtools/secrets.clj like so:
 
-```(ns ghtools.secrets)
+```
+(ns ghtools.secrets)
 (def slack-token "slack-token-goes-here")
 (def channel-id "channel-id-to-post-to-goes-here")
 (def repos ["user/repo1" "user/repo2"]) ; repos to get Pull requests from

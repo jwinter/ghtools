@@ -2,7 +2,19 @@
 
 Github tools
 
-run cider-jack-in from core_test.clj
+Configure by adding a src/ghtools/secrets.clj like so:
+
+```(ns ghtools.secrets)
+(def slack-token "slack-token-goes-here")
+(def channel-id "channel-id-to-post-to-goes-here")
+(def repos ["user/repo1" "user/repo2"]) ; repos to get Pull requests from
+(def gh-api "https://api.github.com") ; change to point to your enterprise API as needed
+(def oauth-key "oauth-key-for-github")
+```
+
+Then run `lein run`
+
+For development, run cider-jack-in from core_test.clj
 then run (user/reset)
 or
 ```
@@ -26,8 +38,6 @@ ghtools.core-test> (do (user/reset) (run-tests))
 
 [Leiningen]: http://leiningen.org/
 [Maven]: http://maven.apache.org/
-
-
 
 ## Usage
 

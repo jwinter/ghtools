@@ -37,7 +37,7 @@
 (defn html-string [pull]
   (str (.repo-name pull)  ": <a href='" (.url pull) "'>" (.title pull) "</a><br />"))
 
-(defn markdown-string [pull]
+(defn slack-string [pull]
   (str (.repo-name pull)  ": <" (.url pull) "|" (.title pull) ">\n"))
 
 (defn html-format-pulls [pulls]
@@ -46,15 +46,15 @@
           (html-string (pull-init pull)))
         pulls)))
 
-(defn markdown-format-pulls [pulls]
+(defn slack-format-pulls [pulls]
   (str/join
    (map (fn [pull]
-          (markdown-string (pull-init pull)))
+          (slack-string (pull-init pull)))
         pulls)))
 
 (defn split-names [repos]
-  "Takes a list of repos and returns all the open pulls in markdown-format"
+  "Takes a list of repos and returns all the open pulls in slack-format"
   (map #(str/split %1 #"\/") repos))
 
 (defn open-pulls-from-repos [repos]
-  (str "*Open Pull Requests*\n" (str/join (map markdown-format-pulls (map #(apply pulls %1) (split-names repos))))))
+  (str "*Open Pull Requests*\n" (str/join (map slack-format-pulls (map #(apply pulls %1) (split-names repos))))))

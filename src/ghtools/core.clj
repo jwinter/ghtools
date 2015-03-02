@@ -8,7 +8,13 @@
 
 (def slack-api "https://slack.com/api/")
 
-(defrecord Pull [repo-name url title])
+(defrecord Pull [repo-name url title user])
+
+(defn pull-init [pull-json-hash]
+  (->Pull (get-in pull-json-hash ["head" "repo" "full_name"])
+          (pull-json-hash "html_url")
+          (pull-json-hash "title")
+          (get-in pull-json-hash ["user" "login"])))
 
 (defn post-to-slack [channel-id message]
   (client/post (str slack-api "chat.postMessage")
@@ -20,11 +26,6 @@
                  :icon_url "https://photos-3.dropbox.com/t/2/AADXShG2mVqbOgctemLe6chyUPEbnd6oMYRY20AjH74Mng/12/143180821/png/1024x768/3/1424750400/0/2/octocat.svg/CJWIo0QgASACIAMoASgC/7umcmmHRbGl6XN2sVWDIFYOnuE0isGmg8uzM5E-qN8Q"
                  }}))
 
-(defn pull-init [pull-json-hash]
-  (->Pull (get-in pull-json-hash ["head" "repo" "full_name"])
-          (pull-json-hash "html_url")
-          (pull-json-hash "title")))
-
 (defn- fetch-json [url]
   (json/parse-string
    (:body (client/get url {:basic-auth [secrets/oauth-key "x-oauth-basic"] } ))))
@@ -35,10 +36,10 @@
   (fetch-json (str secrets/gh-api "/repos/" username "/" repo "/pulls")))
 
 (defn html-string [pull]
-  (str (.repo-name pull)  ": <a href='" (.url pull) "'>" (.title pull) "</a><br />"))
+  (str (.repo-name pull)  " [" (.user pull) "]: <a href='" (.url pull) "'>" (.title pull) "</a><br />"))
 
 (defn slack-string [pull]
-  (str (.repo-name pull)  ": <" (.url pull) "|" (.title pull) ">\n"))
+  (str (.repo-name pull)  " [" (.user pull) "]: <" (.url pull) "|" (.title pull) ">\n"))
 
 (defn html-format-pulls [pulls]
   (str/join

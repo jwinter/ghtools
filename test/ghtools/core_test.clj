@@ -2,7 +2,10 @@
   (:require [clojure.test :refer :all]
             [ghtools.core :refer :all]
             [cheshire.core :as json]
+            [schema.test :as st]
             ))
+
+(use-fixtures :once st/validate-schemas)
 
 (ns ghtools.core)
 (def sample-json (json/parse-string (slurp "./test/fixtures/pulls.json")))

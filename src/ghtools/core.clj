@@ -3,10 +3,18 @@
             [clj-http.client :as client]
             [cheshire.core :as json]
             [clojure.string :as str]
+            [schema.core :as s]
             [ghtools.secrets :as secrets]
             ))
 
 (def slack-api "https://slack.com/api/")
+
+(def PullB
+  "Schema for github pull requests"
+  {:repo-name s/Str
+   :url s/Str
+   :user s/Str
+   })
 
 (defrecord Pull [repo-name url title user])
 

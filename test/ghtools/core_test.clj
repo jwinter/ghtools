@@ -5,7 +5,6 @@
             [schema.test :as st]
             ))
 
-(use-fixtures :once st/validate-schemas)
 
 (ns ghtools.core)
 (def sample-json (json/parse-string (slurp "./test/fixtures/pulls.json")))
@@ -19,6 +18,7 @@
 
 (ns ghtools.core-test)
 (def test-url "https://api.github.com/repos/jwinter/test-repo/pulls")
+(use-fixtures :once st/validate-schemas)
 
 (deftest testing-pulls
   (testing "pulls"

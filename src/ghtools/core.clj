@@ -9,20 +9,19 @@
 
 (def slack-api "https://slack.com/api/")
 
-(def PullB
-  "Schema for github pull requests"
-  {:repo-name s/Str
-   :url s/Str
-   :user s/Str
-   })
+(s/defrecord Pull
+  [repo-name :- s/Str
+   url  :- s/Str
+   title :- s/Str
+   user  :- s/Str])
 
-(defrecord Pull [repo-name url title user])
 
-(defn pull-init [pull-json-hash]
-  (->Pull (get-in pull-json-hash ["head" "repo" "full_name"])
-          (pull-json-hash "html_url")
-          (pull-json-hash "title")
-          (get-in pull-json-hash ["user" "login"])))
+(s/defn pull-init :- Pull
+  [pull-json-hash]
+  (Pull. (get-in pull-json-hash ["head" "repo" "full_name"])
+         (pull-json-hash "html_url")
+         (pull-json-hash "title")
+         (get-in pull-json-hash ["user" "login"])))
 
 (defn post-to-slack [channel-id message]
   (client/post (str slack-api "chat.postMessage")

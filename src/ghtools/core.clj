@@ -64,7 +64,12 @@
   (map #(str/split %1 #"\/") repos))
 
 (defn all-pulls [repos]
-  (sort-by #(.created_at %1) (map pull-init (flatten (map #(apply pulls %1) (split-names repos))))))
+  (->>
+   (split-names repos) ; returns pairs of repo names
+   (map #(apply pulls %1)) ; fetches JSON hash for each repo
+   flatten ; flatten the array of repos of arrays of PRs
+   (map pull-init)
+   (sort-by #(.created_at %1))))
 
 (defn open-pulls-from-repos [repos]
   "Takes a list of repos and returns all the open pulls in slack-format"

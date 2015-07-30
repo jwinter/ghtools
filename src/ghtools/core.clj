@@ -13,15 +13,17 @@
   [repo-name :- s/Str
    url  :- s/Str
    title :- s/Str
-   user  :- s/Str])
-
+   user  :- s/Str
+   created_at :- s/Str])
 
 (s/defn pull-init :- Pull
   [pull-json-hash]
   (Pull. (get-in pull-json-hash ["head" "repo" "full_name"])
          (pull-json-hash "html_url")
          (pull-json-hash "title")
-         (get-in pull-json-hash ["user" "login"])))
+         (get-in pull-json-hash ["user" "login"])
+         (pull-json-hash "created_at")
+         ))
 
 (defn post-to-slack [channel-id message]
   (client/post (str slack-api "chat.postMessage")
@@ -56,13 +58,16 @@
 
 (defn slack-format-pulls [pulls]
   (str/join
-   (map (fn [pull]
-          (slack-string (pull-init pull)))
-        pulls)))
+   (map slack-string pulls)))
 
 (defn split-names [repos]
-  "Takes a list of repos and returns all the open pulls in slack-format"
   (map #(str/split %1 #"\/") repos))
 
+(defn all-pulls [repos]
+  (sort-by #(.created_at %1) (map pull-init (flatten (map #(apply pulls %1) (split-names repos))))))
+
 (defn open-pulls-from-repos [repos]
-  (str "*Open Pull Requests*\n" (str/join (map slack-format-pulls (map #(apply pulls %1) (split-names repos))))))
+  "Takes a list of repos and returns all the open pulls in slack-format"
+  (str "*Open Pull Requests*\n"
+       (str/join
+        (slack-format-pulls (all-pulls repos)))))

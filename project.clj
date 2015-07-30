@@ -8,5 +8,6 @@
                  [clj-http "1.0.1"]
                  [prismatic/schema "0.4.0"]]
   :main ghtools.runner
-  :profiles {:dev {:dependencies [[org.clojure/tools.namespace "0.2.7"]]
+  :profiles {:dev {:dependencies [[org.clojure/tools.namespace "0.2.7"]
+                                  [org.clojure/test.check "0.7.0"]]
                    :source-paths ["dev"]}})

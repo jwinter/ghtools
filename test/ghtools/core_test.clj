@@ -3,8 +3,10 @@
             [ghtools.core :refer :all]
             [cheshire.core :as json]
             [schema.test :as st]
+            [clojure.test.check :as tc]
+            [clojure.test.check.generators :as gen]
+            [clojure.test.check.properties :as prop]
             ))
-
 
 (ns ghtools.core)
 (def sample-json (json/parse-string (slurp "./test/fixtures/pulls.json")))
@@ -29,12 +31,16 @@
          (is (= "jwinter/test-repo [jwinter]: <a href='https://github.com/jwinter/test-repo/pull/1'>More detail in the README</a><br />"
                 (html-format-pulls sample-pulls)))
          (is (= "jwinter/test-repo [jwinter]: <https://github.com/jwinter/test-repo/pull/1|More detail in the README>\n"
-                (slack-format-pulls sample-pulls)))))
+                (slack-format-pulls (all-pulls ["jwinter/test-repo"]))))))
+  (testing "all-pulls"
+    (let [all-pulls (all-pulls ["jwinter/test-repo" "jwinter/second-test-repo"])]
+      (is (= "2015-01-22T01:17:10Z"
+             (.created_at (first all-pulls))))))
   (testing "open-pulls-from-repos"
     (is (= (open-pulls-from-repos ["jwinter/test-repo" "jwinter/second-test-repo"])
            (str
             "*Open Pull Requests*\n"
-            "jwinter/test-repo [jwinter]: <https://github.com/jwinter/test-repo/pull/1|More detail in the README>\n"
-            "jwinter/second-test-repo [jwinter]: <https://github.com/jwinter/second-test-repo/pull/1|Add a README>\n" )))))
+            "jwinter/second-test-repo [jwinter]: <https://github.com/jwinter/second-test-repo/pull/1|Add a README>\n"
+            "jwinter/test-repo [jwinter]: <https://github.com/jwinter/test-repo/pull/1|More detail in the README>\n" )))))
 
 

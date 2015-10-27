@@ -45,10 +45,12 @@
   (fetch-json (str secrets/gh-api "/repos/" username "/" repo "/pulls")))
 
 (defn html-string [pull]
-  (str (.repo-name pull)  " [" (.user pull) "]: <a href='" (.url pull) "'>" (.title pull) "</a><br />"))
+  (str (.repo-name pull)
+       " [" (.user pull) "]: <a href='" (.url pull) "'>" (.title pull) "</a><br />"))
 
 (defn slack-string [pull]
-  (str (.repo-name pull)  " [" (.user pull) "]: <" (.url pull) "|" (.title pull) ">\n"))
+  (str (.repo-name pull)
+       " [" (.user pull) "]: <" (.url pull) "|" (.title pull) ">\n"))
 
 (defn html-format-pulls [pulls]
   (str/join
@@ -71,8 +73,9 @@
    (map pull-init)
    (sort-by #(.created_at %1))))
 
-(defn open-pulls-from-repos [repos]
+(defn open-pulls-from-repos
   "Takes a list of repos and returns all the open pulls in slack-format"
+  [repos]
   (str "*Open Pull Requests*\n"
        (str/join
         (slack-format-pulls (all-pulls repos)))))

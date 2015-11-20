@@ -36,6 +36,10 @@
     (let [all-pulls (all-pulls ["jwinter/test-repo" "jwinter/second-test-repo"])]
       (is (= "2015-01-22T01:17:10Z"
              (.created_at (first all-pulls))))))
+  (testing "Marks PRs with +1s or lgtms"
+    fail)
+  (testing "Marks PRs that have comments that need responses, by making sure the last non-+1 comment is from the author of the PR"
+    fail)
   (testing "open-pulls-from-repos"
     (is (= (open-pulls-from-repos ["jwinter/test-repo" "jwinter/second-test-repo"])
            (str
